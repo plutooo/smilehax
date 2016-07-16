@@ -1,0 +1,135 @@
+<html>
+  <head>
+    <title>smilehax - 3DS homebrew exploit</title>
+    <script src="payload_select.js"></script>
+    <style>
+      body { background-color: #222; }
+
+      #mid { width: 50%; margin-left: auto; margin-right: auto; }
+
+      .post-header { margin-bottom: 30px; position: relative; }
+
+      h1 { color: #c9d0d4; font-family: "Palatino Linotype", "Book Antiqua", Palatino, serif; font-size: 46px; font-weight: 100; line-height: 50px; letter-spacing: 1px; padding: 0; border-bottom: double #555; }
+
+      p { color: #bbc3c8; font-family: 'Verdana', sans-serif; font-size: 16px; line-height: 26px; padding-left: 30px; margin: 0; }
+
+      a { color: #c64119; border-bottom: 1px solid #c64119; text-decoration: none; }
+
+      a:hover { color: #993213; border-bottom: 1px solid #993213; }
+
+      .topic { color: #bbc3c8; background: #292929; display: inline-block; font-family: 'Georgia', serif; font-style: italic; font-size: 18px; line-height: 22px; margin: 10px 10px 10px 18px; padding: 10px 12px 8px; }
+
+      code { display: inline; border: 1px solid #444; background-color: #000; color: #ddd; white-space: pre; }
+
+      #code { display: block; padding: 10px; margin-left: 40px; }
+      }
+    </style>
+    <script>
+      var global_version = {};
+
+      function firm_changed()
+      {
+      document.getElementById("code").innerHTML = 'Please select a SmileBASIC version.';
+      document.getElementById("hax_combo").selectedIndex = 0;
+      }
+
+      function gen_script()
+      {
+      var c = document.getElementById('hax_combo');
+      var combo = c.options[c.selectedIndex].value;
+
+      if(combo == 'none') {
+            document.getElementById("code").innerHTML = 'Please select a SmileBASIC version.';
+            return;
+      }
+
+      var v = [global_version[1],
+      global_version[2],
+      global_version[3],
+      global_version[4],
+      global_version[5],
+      global_version[0]];
+
+      var otherapp = getFilenameFromVersion(v);
+      var path = combo + '/installer.txt';
+
+      document.getElementById("code").innerHTML = httpGet(path).replace('<INSERT OTHERAPP HERE>', otherapp);
+      }
+
+      function httpGet(theUrl)
+      {
+      var xmlHttp = new XMLHttpRequest();
+      xmlHttp.open("GET", theUrl, false);
+      xmlHttp.send(null);
+      return xmlHttp.responseText;
+      }
+    </script>
+  </head>
+  <body>
+    <div id="mid">
+      <h1>smilehax</h1>
+      <div class="topic">Introduction</div>
+      <p>
+        smilehax is a homebrew exploit for the 3DS game <a href="http://smilebasic.com/">SmileBASIC 3</a>. :)<br />
+      </p>
+      <div class="topic">Requirements</div>
+      <p>&middot; A JAP or USA copy of the game (only available on the eShop)</p>
+      <p>&middot; Recent 3DS firmware, including latest (<i>11.0.0-33</i>) as of this writing</p>
+      <p><b>Note:</b> For USA versions, currently only 3.31 is supported.</p>
+      <div class="topic">Install</div>
+      <p>1. Get the homebrew starter kit from the <a href="https://smealum.github.io/3ds/">homebrew launcher</a> website and put it on your sdcard.</p>
+      <p>2. Enable WiFi on your 3DS.</p>
+      <p>3. Fill in your firmware version here:</p>
+      <p class="firmware-form">
+        <select data-id="0" name="five" onChange="firm_changed()"></select>
+        <select data-id="1" name="zero" onChange="firm_changed()"></select>.
+        <select data-id="2" name="one" onChange="firm_changed()"></select>.
+        <select data-id="3" name="two" onChange="firm_changed()"></select>-
+        <select data-id="4" name="three" onChange="firm_changed()"></select>
+        <select data-id="5" name="four" onChange="firm_changed()"></select>
+      </p>
+      <p>4. Fill in your SmileBASIC version/region (see FAQ if you can't find your version):</p>
+      <p>
+        <select id="hax_combo" onChange="gen_script()">
+          <option value="none">None selected</option>
+          <option value="old_jap300">SmileBASIC 3.00 (JAP Region, Old3DS)</option>
+          <option value="new_jap300">SmileBASIC 3.00 (JAP Region, New3DS)</option>
+          <!--
+          <option value="old_usa321">SmileBASIC 3.21 (USA Region, Old3DS)</option>
+          <option value="new_usa321">SmileBASIC 3.21 (USA Region, New3DS)</option>
+          -->
+          <option value="old_usa331">SmileBASIC 3.31 (USA Region, Old3DS)</option>
+          <option value="new_usa331">SmileBASIC 3.31 (USA Region, New3DS)</option>
+        </select>
+      </p>
+      <p>5. Click the &quot;Create Programs with SmileBASIC&quot; button.</p>
+      <p>6. Enter the following script manually in EDIT mode:</p>
+      <code id="code">Please select a SmileBASIC version.</code>
+      <p>7. Switch back to DIRECT mode, and write the following: <code>SAVE &quot;INSTALL&quot;</code>.</p>
+      <p>8. If you make a typo, you can write <code>LOAD &quot;INSTALL&quot;</code>, fix it, and save it again with <code>SAVE &quot;INSTALL&quot;</code>.</p>
+      <p>9. Execute it by writing <code>RUN</code> in DIRECT mode.</p>
+      <p>10. If everything went well, the screen will become blue, then green.</p>
+      <p>11. The game will exit with an &quot;An error has occured&quot; popup.</p>
+      <p>12. Start the game again. Now run the HAX script!</p>
+      <div class="topic">FAQ</div> 
+      <p><b>How do I trigger the exploit?</b></p>
+      <p>
+        After installation, you can run the exploit by clicking:<br />
+        &middot; Browse Projects &rarr; [DEFAULT] &rarr; HAX &rarr; confirm.</p>
+      <p><b>My version isn't supported. Help!</b></p>
+      <p>You can downgrade SmileBASIC by removing the installed upgrade from 3DS settings.</p>
+      <p>American users on version lower than 3.31 can use another exploit by <a href="https://mrnbayoh.github.io/basicsploit">MrNbaYoh</a>.</p>
+      <p><b>How do I develop homebrew?</b></p>
+      <p>The <a href="https://3dbrew.org/">3dbrew wiki</a> has a tutorial how to setup the toolchain and build example code.</p>
+      <p><b>Where can I find other exploits?</b></p>
+      <p>You can find a summary of exploits on the <a href="https://3dbrew.org/wiki/Homebrew_Exploits">3dbrew wiki</a>.</p>
+      <p><b>Where can I get the source-code?</b></p>
+      <p><a href="https://github.com/plutooo/smilehax">Here.</a></p>
+      <div class="topic">Thanks</div>
+      <p>&middot; yellows8 - help, usa constants</p>
+      <p>&middot; smea - otherapp</p>
+      <p>&middot; MrNbaYoh - for developing a similar exploit</p>
+      <p>Everyone else in the 3DS homebrew community!</p>
+    </div>
+  </body>
+</html>
