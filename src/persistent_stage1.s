@@ -6,29 +6,6 @@
 
 start:
     sub sp, #8
-/* Overwrite a lot of lr's on main stack with svcExitThread. */
-    ldr r0, =0x10000000
-    ldr r2, =0x00100000
-    ldr r3, =0x00200000
-    ldr r4, =SVC_KILL_THREAD
-    ldr r5, =(0x10000000-0x1000)
-__killmainthread_loop:
-    cmp r0, r5
-    beq __killmainthread_done
-    sub r0, #4
-    ldr r1, [r0]
-    cmp r1, r2
-    bcc __killmainthread_loop
-    cmp r1, r3
-    bcs __killmainthread_loop
-    str r4, [r0]
-    b __killmainthread_loop
-__killmainthread_done:
-/* Wait for main thread to exit. */
-    mov r0, #0x10000000
-    mov r1, #0
-    ldr r5, =SVC_SLEEP_THREAD
-    blx r5
 /* Tell GSP thread to fuck off. */
     ldr r4, =GSP_THREAD_OBJ_PTR
     mov r1, #1

